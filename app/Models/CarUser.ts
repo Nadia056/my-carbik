@@ -5,12 +5,10 @@ export default class CarUser extends BaseModel {
   public id: number
 
   @column()
-  public bike_id: number
+  public car_id: number
 
   @column()
   public user_id: number
 
-  static get fillable() {
-    return [   'bike_id',      'user_id' ]
-  }
+ 
 }

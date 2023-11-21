@@ -1,4 +1,5 @@
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import { column, beforeSave, BaseModel } from '@ioc:Adonis/Lucid/Orm'
+import Hash from '@ioc:Adonis/Core/Hash'
 
 export default class Client extends BaseModel {
   @column({ isPrimary: true })
@@ -10,26 +11,29 @@ export default class Client extends BaseModel {
   @column()
   public email: string
 
-  @column()
+  @column({ serializeAs: null })
   public password: string
+
+  @column()
+  public rememberMeToken: string | null
 
   @column()
   public phone: string
 
   @column()
-  public role_id: number
+  public role: number
 
   @column()
   public active_code: number
 
   @column()
-  public status: boolean
+  public active: boolean
 
-  static get fillable() {
-    return [      'name',      'email',      'password',      'phone',      'role_id',      'active_code',      'status'    ]
-  }
 
-  static get hidden() {
-    return ['password']
+   @beforeSave()
+  public static async hashPassword (user: Client) {
+    if (user.$dirty.password) {
+      user.password = await Hash.make(user.password)
+    }
   }
 }

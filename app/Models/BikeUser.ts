@@ -10,9 +10,6 @@ export default class BikeUser extends BaseModel {
   @column()
   public user_id: number
 
-  static get fillable() {
-    return [   'bike_id',      'user_id' ]
-  }
 
 
   

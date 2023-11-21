@@ -31,30 +31,42 @@ Route.post('/login', 'LoginController.login')
 Route.post('/logout', 'LoginController.logout')
 
 //register bike to clients 
-Route.post('/registerBike', 'VehiclesController.store')
+
 
 //routes for clients 
 Route.post('/clients', 'ClientsController.store')
-Route.get('/clients', 'ClientsController.index')
-Route.get ('/clients/:id', 'ClientsController.show')
-Route.put('/clients/:id', 'ClientsController.update')
-Route.delete('clients/:id', 'ClientsController.destroy')
-Route.post('/getUser', 'ClientsController.returnUser')
+Route.post('/getuser', 'ClientsController.getuser')
+
 
 //routes for cars
+Route.group(() => {
+  Route.post('/cars', 'CarsController.store')
+  Route.get('/cars', 'CarsController.index')
+  Route.get ('/cars/:id', 'CarsController.show')
+  Route.put('/cars/:id', 'CarsController.update')
+  Route.delete('cars/:id', 'CarsController.destroy') 
 
-Route.post('/cars', 'CarsController.store')
-Route.get('/cars', 'CarsController.index')
-Route.get ('/cars/:id', 'CarsController.show')
-Route.put('/cars/:id', 'CarsController.update')
-Route.delete('cars/:id', 'CarsController.destroy')
+  Route.post('/bikes', 'BikesController.store')
+  Route.get('/bikes', 'BikesController.index')
+  Route.get ('/bikes/:id', 'BikesController.show')
+  Route.put('/bikes/:id', 'BikesController.update')
+  Route.delete('bikes/:id', 'BikesController.destroy')
+
+  Route.get('/clients', 'ClientsController.index')
+  Route.get ('/clients/:id', 'ClientsController.show')
+  Route.put('/clients/:id', 'ClientsController.update')
+  Route.delete('clients/:id', 'ClientsController.destroy')
+  Route.get('/allusers', 'ClientsController.allClients')
+  Route.post('/CAR', 'VehiclesController.storeCar')
+
+
+  Route.post('/BIKE', 'VehiclesController.storeBike')
+  
+}).middleware('auth:api')
+
+
 
 //routes for bikes
 
-Route.post('/bikes', 'BikesController.store')
-Route.get('/bikes', 'BikesController.index')
-Route.get ('/bikes/:id', 'BikesController.show')
-Route.put('/bikes/:id', 'BikesController.update')
-Route.delete('bikes/:id', 'BikesController.destroy')
 
 

@@ -7,20 +7,15 @@ export default class CarsController {
 
     public async store({ request, response }: HttpContextContract) {
     
-
-             const validationSchema = schema.create({
+          
+            const validationSchema = schema.create({
             brand: schema.string(),
             model: schema.string( ),
             year: schema.number(),
             color: schema.string()
         })
-        await request.validate({ schema: validationSchema })
-        const car = new Car()
-        car.brand = request.input('brand')  
-        car.model = request.input('model')
-        car.year = request.input('year')
-        car.color = request.input('color')
-        await car.save()
+       const payload =  await request.validate({ schema: validationSchema })
+        Car.create(payload)
         return response.status(201)
     }
 

@@ -16,9 +16,7 @@ export default class Car extends BaseModel {
   @column()
   public color: string
 
-  static get fillable() {
-    return [   'brand',      'model',      'year',      'color'    ]
-  }
+
 
 
 }

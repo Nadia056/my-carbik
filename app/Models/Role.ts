@@ -6,9 +6,7 @@ export default class Role extends BaseModel {
   @column()
   public name: string
 
-  static get fillable() {
-    return [ 'name']
-  }
+  
 
   
 }

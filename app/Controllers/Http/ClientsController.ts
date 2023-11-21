@@ -22,22 +22,22 @@ export default class ClientsController {
         phone: schema.string({}, [rules.minLength(10)])
         })
 
-        const validatedData = await request.validate({ schema: validationSchema })
+        const validatedData = request.only(['name', 'email', 'password', 'password_confirmation', 'phone']);
 
-        if (validatedData.password !== request.input('password_confirmation')) {
-        return response.status(400)
+        // Check if password matches password_confirmation
+        if (validatedData.password !== validatedData.password_confirmation) {
+          return 400
         }
-
+        
+        // Check if client with email already exists
         const clientExists = await Client.query().where('email', validatedData.email).first()
         if (clientExists) {
-        return response.status(400)
+          return 401
         }
-
-    
         const client = new Client()
         client.name = validatedData.name
         client.email = validatedData.email
-        client.password = await Hash.make(validatedData.password)
+        client.password = validatedData.password
         client.phone = validatedData.phone
         client.active_code = Math.floor(Math.random() * 9000) + 1000
         await client.save()
@@ -47,7 +47,7 @@ export default class ClientsController {
         //.delay(1000)
         // .onQueue('emailcodigo')
 
-        return response.status(201)
+        return 201
     }
     public async index({}: HttpContextContract) {
         return Client.all()
@@ -71,8 +71,8 @@ export default class ClientsController {
         
 
         client.name = validatedData.name
-        client.role_id = validatedData.role
-        client.status = validatedData.status
+        client.role = validatedData.role
+        client.active = validatedData.status
         client.phone = validatedData.phone
         await client.save()
     }
@@ -88,25 +88,20 @@ export default class ClientsController {
 
         }
         await client.delete()
-        return response.status(204)
+        return 200
 
     }
     //get client by email and return client id
-    public async returnUser({ response, request }: HttpContextContract) {
-      
-        const validationSchema = schema.create({
-            email: schema.string({}, [rules.email()]),
-           
-        })
-
-        const validatedData = await request.validate({ schema: validationSchema })
-        const client = await Client.query().where('email', validatedData.email).first()
+    public async getuser({ request }: HttpContextContract) {
+        const email = request.input('email');
+        const client = await Client.query().where('email', email).first();
+        
         if (!client) {
-            return response.status(404)
+          return 400
         }
         
-        return client.id
-    }
+        return { id: client.id }
+      }
     //get client by id and return client data
     public async show({ response, params }: HttpContextContract) {
         const client = await Client.find(params.id)
@@ -115,5 +110,11 @@ export default class ClientsController {
         }
         return client
     }
+
+    //return all clients
+    public async allClients({ response }: HttpContextContract) {
+        const clients = await Client.query().orderBy('id');
+        return response.status(200).send(clients);
+      }
 
 }
